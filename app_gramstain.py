@@ -11,6 +11,12 @@ LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 
+col00, col01 = st.columns([0.85,0.55])
+with col01:
+    st.image(BASE_DIR / "BT v1.png")
+with col00:
+    st.image(BASE_DIR / "SHL.png")
+
 st.set_page_config(
     page_title="i3L AI System",
     layout="wide",
