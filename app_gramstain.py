@@ -11,6 +11,10 @@ LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 
+if LOGO_PATH.exists():
+    st.image(Image.open(LOGO_PATH))
+st.title("i3L AI-based Microbiology Detection")
+
 col00, col01 = st.columns([0.85,0.55])
 with col01:
     st.image(BASE_DIR / "BT v1.png")
@@ -169,9 +173,7 @@ def colony_tab():
         #     )
 
 
-if LOGO_PATH.exists():
-    st.image(Image.open(LOGO_PATH))
-st.title("i3L AI-based Microbiology Detection")
+
 
 tab_gram, tab_colony = st.tabs(["Gram Staining Detection", "Colony Counting"])
 
