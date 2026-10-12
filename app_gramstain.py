@@ -11,9 +11,11 @@ LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 
+
+st.title("i3L AI-based Microbiology Detection")
+
 if LOGO_PATH.exists():
     st.image(Image.open(LOGO_PATH))
-st.title("i3L AI-based Microbiology Detection")
 
 col00, col01 = st.columns([0.85,0.55])
 with col01:
