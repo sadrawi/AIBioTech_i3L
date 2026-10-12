@@ -12,7 +12,6 @@ GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 
 
-st.title("i3L AI-based Microbiology Detection")
 
 # if LOGO_PATH.exists():
 #     st.image(Image.open(LOGO_PATH))
@@ -22,6 +21,11 @@ with col01:
     st.image(BASE_DIR / "BT v1.png")
 with col00:
     st.image(Image.open(LOGO_PATH))
+
+st.markdown(
+    "<h1 style='text-align: center;'>i3L AI-based Microbiology Detection</h1>",
+    unsafe_allow_html=True,
+)
 
 st.set_page_config(
     page_title="i3L AI System",
