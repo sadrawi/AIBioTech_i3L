@@ -14,14 +14,14 @@ COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 
 st.title("i3L AI-based Microbiology Detection")
 
-if LOGO_PATH.exists():
-    st.image(Image.open(LOGO_PATH))
+# if LOGO_PATH.exists():
+#     st.image(Image.open(LOGO_PATH))
 
 col00, col01 = st.columns([0.85,0.55])
 with col01:
     st.image(BASE_DIR / "BT v1.png")
 with col00:
-    st.image(BASE_DIR / "SHL.png")
+    st.image(Image.open(LOGO_PATH))
 
 st.set_page_config(
     page_title="i3L AI System",
