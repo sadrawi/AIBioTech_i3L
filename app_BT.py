@@ -189,17 +189,7 @@ def colony_tab():
             return
         st.dataframe(counts, hide_index=True)
 
-        cfu = n_colonies * (10 ** dilution_exp) / volume_ml
-        st.latex(r"\text{CFU/mL} = \frac{N \times 10^{n}}{V}")
-        st.latex(
-            rf"\text{{CFU/mL}} = \frac{{{n_colonies} \times 10^{{{dilution_exp}}}}}{{{volume_ml:g}}} = {sci_latex(cfu)}"
-        )
-
-        if n_colonies < 30 or n_colonies > 300:
-            st.warning(
-                "Count is outside the 30–300 countable range, so the CFU/mL estimate is less reliable. "
-                "Use a plate from a different dilution if available."
-            )
+       
 
 
 # ---------- Antimicrobial resistance (disk diffusion) ----------
