@@ -14,8 +14,8 @@ HEADER_IMAGE_PATHS = (
     BASE_DIR / "SHL.png",
     BASE_DIR / "BT v1.png",
 )
-HEADER_GAP_PX = 2  # space between the logo and the two images
-HEADER_IMAGE_HEIGHT_PX = 120  # display height of the two images (smaller number = smaller images)
+HEADER_GAP_PX = 3  # space between the logo and the two images
+HEADER_IMAGE_HEIGHT_PX = 200  # display height of the two images (smaller number = smaller images)
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 AMR_MODEL_PATH = BASE_DIR / "best_amr.pt"
