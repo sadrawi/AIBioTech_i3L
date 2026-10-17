@@ -10,6 +10,10 @@ from ultralytics import YOLO
 
 BASE_DIR = Path(__file__).parent
 LOGO_PATH = BASE_DIR / "i3LUniversity.png"
+HEADER_IMAGE_PATHS = (
+    BASE_DIR / "image1.png",
+    BASE_DIR / "image2.png",
+)
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 AMR_MODEL_PATH = BASE_DIR / "best_amr.pt"
@@ -189,7 +193,17 @@ def colony_tab():
             return
         st.dataframe(counts, hide_index=True)
 
-       
+        cfu = n_colonies * (10 ** dilution_exp) / volume_ml
+        st.latex(r"\text{CFU/mL} = \frac{N \times 10^{n}}{V}")
+        st.latex(
+            rf"\text{{CFU/mL}} = \frac{{{n_colonies} \times 10^{{{dilution_exp}}}}}{{{volume_ml:g}}} = {sci_latex(cfu)}"
+        )
+
+        if n_colonies < 30 or n_colonies > 300:
+            st.warning(
+                "Count is outside the 30–300 countable range, so the CFU/mL estimate is less reliable. "
+                "Use a plate from a different dilution if available."
+            )
 
 
 # ---------- Antimicrobial resistance (disk diffusion) ----------
@@ -433,6 +447,11 @@ def amr_tab():
 
 if LOGO_PATH.exists():
     st.image(Image.open(LOGO_PATH))
+
+header_cols = st.columns(len(HEADER_IMAGE_PATHS))
+for i in range(len(HEADER_IMAGE_PATHS)):
+    if HEADER_IMAGE_PATHS[i].exists():
+        header_cols[i].image(Image.open(HEADER_IMAGE_PATHS[i]), width="stretch")
 st.markdown(
     "<h1 style='text-align: center;'>i3L AI-based Microbiology Detection</h1>",
     unsafe_allow_html=True,
