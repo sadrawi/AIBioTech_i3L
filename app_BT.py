@@ -15,6 +15,7 @@ HEADER_IMAGE_PATHS = (
     BASE_DIR / "BT v1.png",
 )
 HEADER_GAP_PX = 2  # space between the logo and the two images
+HEADER_IMAGE_HEIGHT_PX = 120  # display height of the two images (smaller number = smaller images)
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 AMR_MODEL_PATH = BASE_DIR / "best_amr.pt"
@@ -467,10 +468,12 @@ header = st.container(gap=HEADER_GAP_PX)
 if LOGO_PATH.exists():
     header.image(trim_border(Image.open(LOGO_PATH)))
 
-header_cols = header.columns(len(HEADER_IMAGE_PATHS))
-for i in range(len(HEADER_IMAGE_PATHS)):
-    if HEADER_IMAGE_PATHS[i].exists():
-        header_cols[i].image(trim_border(Image.open(HEADER_IMAGE_PATHS[i])), width="stretch")
+image_row = header.container(horizontal=True, gap="small")
+for path in HEADER_IMAGE_PATHS:
+    if path.exists():
+        img = trim_border(Image.open(path))
+        display_width = round(HEADER_IMAGE_HEIGHT_PX * img.width / img.height)
+        image_row.image(img, width=display_width)
 st.markdown(
     "<h1 style='text-align: center;'>i3L AI-based Microbiology Detection</h1>",
     unsafe_allow_html=True,
