@@ -11,8 +11,8 @@ from ultralytics import YOLO
 BASE_DIR = Path(__file__).parent
 LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 HEADER_IMAGE_PATHS = (
-    BASE_DIR / "image1.png",
-    BASE_DIR / "image2.png",
+    BASE_DIR / "SHL.png",
+    BASE_DIR / "BT v1.png",
 )
 HEADER_GAP_PX = 4  # space between the logo and the two images
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
