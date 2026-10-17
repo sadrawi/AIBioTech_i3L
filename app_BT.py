@@ -5,15 +5,16 @@ from pathlib import Path
 import cv2
 import pandas as pd
 import streamlit as st
-from PIL import Image
+from PIL import Image, ImageChops
 from ultralytics import YOLO
 
 BASE_DIR = Path(__file__).parent
 LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 HEADER_IMAGE_PATHS = (
-    BASE_DIR / "BT v1.png",
-    BASE_DIR / "SHL.png",
+    BASE_DIR / "image1.png",
+    BASE_DIR / "image2.png",
 )
+HEADER_GAP_PX = 4  # space between the logo and the two images
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 AMR_MODEL_PATH = BASE_DIR / "best_amr.pt"
@@ -36,6 +37,23 @@ def get_model(path):
         st.error(f"Model file not found: {path.name}. Upload it to the repo root.")
         return None
     return load_model(path)
+
+
+def trim_border(img, tolerance=10):
+    if img.mode in ("RGBA", "LA") or "transparency" in img.info:
+        rgba = img.convert("RGBA")
+        mask = rgba.getchannel("A").point(lambda a: 255 if a > tolerance else 0)
+        bbox = mask.getbbox()
+        if bbox:
+            rgba = rgba.crop(bbox)
+        img = rgba
+    rgb_view = img.convert("RGB")
+    background = Image.new("RGB", rgb_view.size, rgb_view.getpixel((0, 0)))
+    diff = ImageChops.difference(rgb_view, background).convert("L")
+    bbox = diff.point(lambda v: 255 if v > tolerance else 0).getbbox()
+    if bbox:
+        return img.crop(bbox)
+    return img
 
 
 def read_image(uploaded_file):
@@ -445,13 +463,14 @@ def amr_tab():
 
 # ---------- Layout ----------
 
+header = st.container(gap=HEADER_GAP_PX)
 if LOGO_PATH.exists():
-    st.image(Image.open(LOGO_PATH))
+    header.image(trim_border(Image.open(LOGO_PATH)))
 
-header_cols = st.columns(len(HEADER_IMAGE_PATHS))
+header_cols = header.columns(len(HEADER_IMAGE_PATHS))
 for i in range(len(HEADER_IMAGE_PATHS)):
     if HEADER_IMAGE_PATHS[i].exists():
-        header_cols[i].image(Image.open(HEADER_IMAGE_PATHS[i]), width="stretch")
+        header_cols[i].image(trim_border(Image.open(HEADER_IMAGE_PATHS[i])), width="stretch")
 st.markdown(
     "<h1 style='text-align: center;'>i3L AI-based Microbiology Detection</h1>",
     unsafe_allow_html=True,
