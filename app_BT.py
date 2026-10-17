@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).parent
 LOGO_PATH = BASE_DIR / "i3LUniversity.png"
 HEADER_IMAGE_PATHS = (
     BASE_DIR / "BT v1.png",
-    BASE_DIR / "image2.png",
+    BASE_DIR / "SHL.png",
 )
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
