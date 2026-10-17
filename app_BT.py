@@ -14,7 +14,7 @@ HEADER_IMAGE_PATHS = (
     BASE_DIR / "SHL.png",
     BASE_DIR / "BT v1.png",
 )
-HEADER_GAP_PX = 4  # space between the logo and the two images
+HEADER_GAP_PX = 2  # space between the logo and the two images
 GRAM_MODEL_PATH = BASE_DIR / "best_gramstain.pt"
 COLONY_MODEL_PATH = BASE_DIR / "best_colony.pt"
 AMR_MODEL_PATH = BASE_DIR / "best_amr.pt"
