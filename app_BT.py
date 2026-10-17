@@ -43,10 +43,28 @@ def plot_result(result, show_labels=True, line_width=None):
     return plotted_bgr[:, :, ::-1].copy()
 
 
+def get_boxes(result):
+    if result.boxes is not None:
+        return result.boxes
+    return getattr(result, "obb", None)
+
+
+def class_probabilities(result, top_k=5):
+    probs = result.probs.data.tolist()
+    order = sorted(range(len(probs)), key=lambda i: probs[i], reverse=True)
+    rows = []
+    for i in order[:top_k]:
+        rows.append({"Class": result.names[i], "Probability": f"{probs[i]:.1%}"})
+    return pd.DataFrame(rows)
+
+
 def count_per_class(result):
+    boxes = get_boxes(result)
+    if boxes is None:
+        return pd.DataFrame()
     names = result.names
     counts = {}
-    for cls_id in result.boxes.cls.tolist():
+    for cls_id in boxes.cls.tolist():
         name = names[int(cls_id)]
         if name in counts:
             counts[name] += 1
@@ -80,7 +98,10 @@ def gram_stain_tab():
     if model is None:
         return
 
-    conf = st.slider("Confidence threshold", 0.05, 0.95, 0.25, 0.05, key="gram_conf")
+    is_classifier = model.task == "classify"
+    conf = 0.25
+    if not is_classifier:
+        conf = st.slider("Confidence threshold", 0.05, 0.95, 0.25, 0.05, key="gram_conf")
     source_img = st.file_uploader(
         "Choose a Gram-stained image...",
         type=("jpg", "jpeg", "png"),
@@ -96,6 +117,13 @@ def gram_stain_tab():
         result = model.predict(img, conf=conf)[0]
         show_side_by_side(img, plot_result(result))
 
+        if result.probs is not None:
+            top_class = result.names[result.probs.top1]
+            top_conf = result.probs.top1conf.item()
+            st.success(f"Predicted class: **{top_class}** ({top_conf:.1%})")
+            st.dataframe(class_probabilities(result), hide_index=True)
+            return
+
         counts = count_per_class(result)
         if counts.empty:
             st.info("No objects detected. Try lowering the confidence threshold.")
@@ -109,6 +137,9 @@ def colony_tab():
     st.subheader("Colony Counting")
     model = get_model(COLONY_MODEL_PATH)
     if model is None:
+        return
+    if model.task == "classify":
+        st.error(f"{COLONY_MODEL_PATH.name} is a classification model. This tab needs an object detection model.")
         return
 
     col_a, col_b, col_c = st.columns(3)
@@ -149,7 +180,7 @@ def colony_tab():
         result = model.predict(img, conf=conf, imgsz=imgsz, max_det=1000)[0]
         show_side_by_side(img, plot_result(result, show_labels=show_labels, line_width=1))
 
-        n_colonies = len(result.boxes)
+        n_colonies = len(get_boxes(result))
         st.metric("Total colonies", n_colonies)
 
         counts = count_per_class(result)
@@ -193,10 +224,13 @@ def select_boxes(result, class_name):
     selected = []
     if class_name == NONE_OPTION:
         return selected
+    boxes = get_boxes(result)
+    if boxes is None:
+        return selected
     names = result.names
-    xyxy = result.boxes.xyxy.tolist()
-    cls_ids = result.boxes.cls.tolist()
-    confs = result.boxes.conf.tolist()
+    xyxy = boxes.xyxy.tolist()
+    cls_ids = boxes.cls.tolist()
+    confs = boxes.conf.tolist()
     for i in range(len(cls_ids)):
         if names[int(cls_ids[i])] != class_name:
             continue
@@ -327,6 +361,9 @@ def amr_tab():
     st.subheader("Antimicrobial Resistance Detection (Disk Diffusion)")
     model = get_model(AMR_MODEL_PATH)
     if model is None:
+        return
+    if model.task == "classify":
+        st.error(f"{AMR_MODEL_PATH.name} is a classification model. This tab needs an object detection model.")
         return
 
     options = class_options(model)
